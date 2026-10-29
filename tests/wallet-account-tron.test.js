@@ -59,8 +59,6 @@ jest.unstable_mockModule('tronweb', () => {
 
 const { WalletAccountTron, WalletAccountReadOnlyTron } = await import('../index.js')
 
-// The raw data tronweb's transaction builder returns alongside txID: every TRON contract names the
-// account it acts for, and that is what the wallet checks a built transaction against.
 const BUILT_RAW_DATA = {
   contract: [{
     type: 'TransferContract',
@@ -177,13 +175,6 @@ describe('WalletAccountTron', () => {
   }
   const CONSISTENT_PREBUILT_SIGNATURE = '90772e79b238b0ce83446675f091e48a5ee7d3e76afcd830d21e91247aa9f7800d91038aaada318c28c6f01a2563a4a29b970bc651c9bdff5e7f70daf9a4f7e101'
 
-  /**
-   * A prebuilt transaction whose id really is the hash of its raw data, so it reaches the owner
-   * check rather than failing the consistency check first.
-   *
-   * @param {Object} value - The contract parameter value, which names the account it acts for.
-   * @returns {Object} The transaction.
-   */
   const consistentTransferTx = (value) => {
     const { transaction: utils } = new TronWeb({ fullHost: 'https://tron.web.provider/' }).utils
     const tx = {
@@ -225,7 +216,7 @@ describe('WalletAccountTron', () => {
         NetUsed: 0
       })
 
-      getAccountMock.mockResolvedValue({ address: RECIPIENT }) // recipient already activated
+      getAccountMock.mockResolvedValue({ address: RECIPIENT })
 
       const accountWithMaxFee = new WalletAccountTron(SEED_PHRASE, "0'/0/0", {
         provider: 'https://tron.web.provider/',
@@ -257,7 +248,7 @@ describe('WalletAccountTron', () => {
         NetUsed: 0
       })
 
-      getAccountMock.mockResolvedValue({ address: RECIPIENT }) // recipient already activated
+      getAccountMock.mockResolvedValue({ address: RECIPIENT })
 
       const accountWithMaxFee = new WalletAccountTron(SEED_PHRASE, "0'/0/0", {
         provider: 'https://tron.web.provider/',
@@ -293,7 +284,7 @@ describe('WalletAccountTron', () => {
         NetUsed: 0
       })
 
-      getAccountMock.mockResolvedValue({ address: RECIPIENT }) // recipient already activated
+      getAccountMock.mockResolvedValue({ address: RECIPIENT })
 
       const accountWithMaxFee = new WalletAccountTron(SEED_PHRASE, "0'/0/0", {
         provider: 'https://tron.web.provider/',
@@ -426,7 +417,7 @@ describe('WalletAccountTron', () => {
 
       sendTrxMock.mockResolvedValue(DUMMY_SEND_TRX_RESULT)
       sendRawTransactionMock.mockResolvedValue({ txid: DUMMY_TX_ID })
-      getAccountMock.mockResolvedValue({ address: RECIPIENT }) // recipient already activated
+      getAccountMock.mockResolvedValue({ address: RECIPIENT })
       getAccountResourcesMock.mockResolvedValue({
         freeNetLimit: 5000,
         freeNetUsed: 0,
@@ -614,6 +605,8 @@ describe('WalletAccountTron', () => {
       }
 
       sendTrxMock.mockResolvedValue(DUMMY_SEND_TRX_RESULT)
+
+      getAccountMock.mockResolvedValue({ address: TRANSACTION.to })
 
       getAccountResourcesMock.mockResolvedValue({
         freeNetLimit: 0,
